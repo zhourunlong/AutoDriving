@@ -1,0 +1,11 @@
+Throttle: If the vehicle is static, then the acceleration slowly goes to a value larger than
+the expectation then slowly goes down to the expectation, otherwise it quickly goes to the 
+expectation. But since the static part does not affect much, I only recorded the expectation.
+The valid values of throttle are from 0 to 0.8.
+
+Brake: After a short delay, the acceleration quickly goes to the expectation.
+The valid values of brake are from 0 to 0.4.
+
+Steering: The radius is fixed if the value is fixed, whatever the velocity is.
+Then I found R(x)*x = a quadratic function, using MS Excel.
+So I didn't use the table, but used the formula instead.
