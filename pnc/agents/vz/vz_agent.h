@@ -249,7 +249,7 @@ class vzVehicleAgent : public simulation::VehicleAgent {
       //std::cerr << name() << " cur_color = " << cur_color << " nxt_color = " << nxt_color << " time_to_end = " << time_to_end << " predict_time = " << predict_time << "\n";
       if (rem_distance < stop_distance + vehicle_params().vehicle_fa_to_front()) {
         if (cur_color == 0) {
-          if (predict_time < time_to_end + 0.5)
+          if (predict_time < time_to_end + 3.5)
             phase = 4;
         } else if (nxt_color == 0) {
           if (predict_time > time_to_end - 0.5)
