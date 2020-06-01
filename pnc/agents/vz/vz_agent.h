@@ -23,7 +23,7 @@ const double throttle_table[81] = {0,0.00740,0.01396,0.01975,0.02484,0.02930,0.0
 const double brake_table[41] = {0,0.02417,0.04835,0.07252,0.09670,0.12087,0.14504,0.16922,0.19339,0.21757,0.24174,0.26591,0.29009,0.31426,0.33844,0.35556,0.36209,0.36863,0.37516,0.38170,0.38824,0.56471,0.74118,1.16471,1.65882,2.15294,2.75294,3.35294,3.96078,4.56863,5.17647,5.78823,6.40000,7.01176,7.62353,8.23529,8.70588,9.17647,9.64705,10.11764,10.58823};
 const int num_predict = 11;
 const double pi = acos(-1);
-const double Alpha = 2;
+const double Alpha = 2.5;
 const double Beta = 0;
 const double target_velocity = 10;
 const double stop_distance = target_velocity * target_velocity * 0.125;
@@ -266,6 +266,7 @@ class vzVehicleAgent : public simulation::VehicleAgent {
         interface::perception::PerceptionObstacle obstacle = agent_status.perception_status().obstacle(i);
         if (obstacle.type() != interface::perception::ObjectType::CAR && obstacle.type() != interface::perception::ObjectType::PEDESTRIAN)
           continue;
+        bool is_car = (obstacle.type() == interface::perception::ObjectType::CAR);
         std::vector <interface::geometry::Point3D> points;
         for (int j = 0; j < obstacle.polygon_point_size(); ++j)
           points.push_back(obstacle.polygon_point(j));
@@ -293,6 +294,11 @@ class vzVehicleAgent : public simulation::VehicleAgent {
             for (int y = 0; y <= numt; ++y) {
               double t = lt_ + dt_ * y;
               dmin = std::min(dmin, distance(points[k] + (t * obs_vel) * dir, route_pnt[j]));
+              if (is_car) {
+                dmin = std::min(dmin, distance(points[k] + (t * fmax(obs_vel - 2, 0.0)) * dir, route_pnt[j]));
+                if (fabs(CalcAngle(agent_status.vehicle_status().velocity(), dir)) < 0.5)
+                  dmin = std::min(dmin, distance(points[k] + (t * fmax(obs_vel + 2, 0.0)) * dir, route_pnt[j]));
+              }
             }
           lt_ = t_;
           if (dmin < safe_r) {
