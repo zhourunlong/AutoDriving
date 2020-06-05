@@ -439,7 +439,7 @@ class vzVehicleAgent : public simulation::VehicleAgent {
   }
 
   double CalcSteerFromUt(const double& ut) {
-    double f = exp(fabs(ut) * 0.5) * 0.08;
+    double f = (exp(fabs(ut) * 0.5) - 1);
     if (ut < 0)
       f = -f;
     return CalcSteerFromCurv(f);
